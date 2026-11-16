@@ -1,0 +1,9 @@
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/mpesa/callback"
+  to = "/.netlify/functions/mpesa-callback"
+  status = 200
