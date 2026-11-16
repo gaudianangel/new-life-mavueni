@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#092d25">
+<title>New Life Mavueni | New Life Centre</title>
+<meta name="description" content="New Life Mavueni ministry, crusades, sermons and Living Water.">
+
+<style>
+:root{--green:#092d25;--deep:#061e19;--gold:#d8b45b;--cream:#f7f5ef;--text:#26332d}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,sans-serif;color:var(--text);line-height:1.6}
+a{text-decoration:none;color:inherit}
+.container{width:92%;max-width:1150px;margin:auto}
+.top{background:var(--deep);color:white;padding:9px;font-size:13px;text-align:center}
+header{background:var(--green);color:white;position:sticky;top:0;z-index:10}
+nav{display:flex;justify-content:space-between;align-items:center;min-height:75px;gap:15px}
+.brand{font-weight:bold;font-size:18px;letter-spacing:1px}
+.brand small{display:block;color:var(--gold);font-size:10px}
+.links{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.links a:hover{color:var(--gold)}
+.menu{display:none;background:transparent;color:white;border:1px solid white;padding:8px}
+.hero{padding:115px 0;background:linear-gradient(90deg,#061e19ed,#061e1980),url('https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1800&q=80') center/cover;color:white}
+.hero h1{font: bold clamp(38px,6vw,68px) Georgia;line-height:1.1;max-width:750px}
+.hero p{max-width:650px;font-size:18px;color:#eee}
+.eyebrow{color:var(--gold);font-weight:bold;letter-spacing:2px;text-transform:uppercase;font-size:12px}
+.btn{display:inline-block;padding:13px 21px;background:var(--gold);color:#17251e;border-radius:4px;font-weight:bold;border:0;cursor:pointer}
+.btn-dark{background:var(--green);color:white}
+section{padding:75px 0}
+.heading{text-align:center;margin-bottom:38px}
+.heading h2{font: bold 38px Georgia;color:var(--green);margin:8px}
+.heading p{color:#69766f}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.about-photo{height:370px;border-radius:8px;background:url('https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1000&q=80') center/cover}
+.about h2,.pastor h2,.shop h2{font: bold 38px Georgia;color:var(--green)}
+.values{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.values div{background:var(--cream);padding:15px;font-weight:bold;color:var(--green)}
+.pastor{background:var(--cream)}
+.pastor-box{max-width:850px;margin:auto;display:grid;grid-template-columns:260px 1fr;gap:30px;align-items:center}
+.pastor-photo{height:300px;background:#e4e8e2;border:2px dashed #9aa69c;display:grid;place-items:center;text-align:center;padding:20px;color:#53635a}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{border:1px solid #e2e6e2;border-radius:7px;padding:24px}
+.card h3{color:var(--green);font: bold 22px Georgia}
+.events{background:var(--green);color:white}
+.events .heading h2{color:white}
+.events .heading p{color:#ddd}
+.event{background:white;color:#26332d;border-radius:7px;padding:24px}
+.event h3{color:var(--green);font: bold 23px Georgia}
+.shop{background:#fff}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center}
+.stage{min-height:470px;background:linear-gradient(145deg,#e9f5f9,#d2e8ee);border-radius:12px;display:grid;place-items:center;padding:30px}
+.bottle{width:190px;height:360px;position:relative;border:2px solid #9bbbc9;border-radius:35px 35px 24px 24px;background:linear-gradient(90deg,#b6d9e6aa,#ffffffcc,#b6d9e6aa);box-shadow:15px 15px 25px #0002;display:flex;align-items:center;justify-content:center}
+.bottle:before{content:"";position:absolute;top:-42px;width:76px;height:47px;background:#174d81;border:2px solid #103b66;border-radius:8px 8px 3px 3px}
+.bottle:after{content:"";position:absolute;top:-7px;width:90px;height:17px;background:#d7eaf0;border:1px solid #9bbbc9;border-radius:5px}
+.label{width:100%;background:white;padding:5px;border-top:3px solid var(--gold);border-bottom:3px solid var(--gold)}
+.label svg{width:100%;display:block}
+.price{font-size:30px;font-weight:bold;color:#a17c29}
+.pills span{display:inline-block;background:#f4f0e5;padding:7px 12px;border-radius:30px;margin:4px;font-size:12px}
+.quantity{padding:12px;width:75px;border:1px solid #aaa;border-radius:4px;font-size:16px}
+.giving{background:var(--cream)}
+.giving-box{max-width:750px;margin:auto;background:white;padding:30px;text-align:center;border-radius:8px}
+footer{background:var(--deep);color:white;padding:40px 0}
+.footer-grid{display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap}
+footer h3{color:var(--gold)}
+footer p{color:#ddd}
+.copyright{border-top:1px solid #ffffff33;margin-top:25px;padding-top:18px;font-size:13px}
+.modal-bg{display:none;position:fixed;inset:0;background:#0009;z-index:30;align-items:center;justify-content:center;padding:15px}
+.modal-bg.open{display:flex}
+.modal{background:white;padding:25px;border-radius:9px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
+.modal h2{color:var(--green)}
+.field{display:block;margin:13px 0}
+.field span{display:block;font-weight:bold;font-size:13px}
+.field input{width:100%;padding:12px;border:1px solid #bbb;border-radius:4px;font-size:16px}
+.status{display:none;padding:12px;background:#f5f0df;margin-top:15px}
+.status.show{display:block}
+@media(max-width:800px){
+.menu{display:block}
+.links{display:none;position:absolute;top:75px;left:0;right:0;background:var(--green);padding:20px;flex-direction:column}
+.links.open{display:flex}
+.about,.shop-grid,.pastor-box{grid-template-columns:1fr}
+.cards{grid-template-columns:1fr}
+.about-photo{height:260px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+NEW LIFE MAVUENI | NEW LIFE CENTRE
+</div>
+
+<header>
+<div class="container">
+<nav>
+<a href="#home" class="brand">
+NEW LIFE MAVUENI
+<small>NEW LIFE CENTRE</small>
+</a>
+<button class="menu" onclick="document.querySelector('.links').classList.toggle('open')">☰ MENU</button>
+<div class="links">
+<a href="#home">Home</a>
+<a href="#about">About</a>
+<a href="#pastor">Pastor</a>
+<a href="#sermons">Sermons</a>
+<a href="#events">Events</a>
+<a href="#shop">Living Water</a>
+<a href="#giving">Giving</a>
+</div>
+</nav>
+</div>
+</header>
+
+<main>
+
+<section class="hero" id="home">
+<div class="container">
+<div class="eyebrow">Welcome to New Life Mavueni</div>
+<h1>A place to grow in faith, hope and the Word.</h1>
+<p>Welcome to New Life Mavueni. Discover ministry information, teachings, crusade announcements and ministry updates.</p>
+<a class="btn" href="#events">Explore Events</a>
+<a class="btn" href="#about">About Us</a>
+</div>
+</section>
+
+<section id="about">
+<div class="container about">
+<div class="about-photo"></div>
+<div>
+<div class="eyebrow">About the ministry</div>
+<h2>Welcome to New Life Centre</h2>
+<p>New Life Mavueni is a ministry dedicated to faith, worship, teaching and fellowship.</p>
+<p>This section will contain the ministry's approved history, vision, mission and statement of faith.</p>
+<div class="values">
+<div>Faith and Worship</div>
+<div>Teaching and Growth</div>
+<div>Fellowship</div>
+<div>Community</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="pastor" id="pastor">
+<div class="container">
+<div class="heading">
+<div class="eyebrow">Ministry leadership</div>
+<h2>Pastor Ezekiel Odero</h2>
+</div>
+<div class="pastor-box">
+<div class="pastor-photo">
+PASTOR'S PHOTOGRAPH<br>
+Replace with approved ministry photo
+</div>
+<div>
+<h2>Pastor Ezekiel Odero</h2>
+<p>This section is reserved for the approved pastor biography, ministry message and official photographs.</p>
+<p>We will add the approved information supplied by the ministry.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="sermons">
+<div class="container">
+<div class="heading">
+<div class="eyebrow">Teaching and inspiration</div>
+<h2>Sermons and Teachings</h2>
+<p>Ministry teachings and scripture-based resources.</p>
+</div>
+<div class="cards">
+<div class="card">
+<h3>Faith and Spiritual Growth</h3>
+<p>Approved teaching notes and sermon summaries.</p>
+</div>
+<div class="card">
+<h3>Prayer and Devotion</h3>
+<p>Messages and ministry teaching resources.</p>
+</div>
+<div class="card">
+<h3>Living by the Word</h3>
+<p>Scripture-based teaching and study resources.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="events" id="events">
+<div class="container">
+<div class="heading">
+<div class="eyebrow">Gatherings and announcements</div>
+<h2>Crusades and Ministry Events</h2>
+<p>Confirmed ministry dates, venues and programmes.</p>
+</div>
+<div class="cards">
+<div class="event">
+<h3>New Life Mavueni Crusade</h3>
+<p>Crusade programme, dates and venue details will be published here after official confirmation.</p>
+</div>
+<div class="event">
+<h3>Church Services</h3>
+<p>Approved service days, times and location details will appear here.</p>
+</div>
+<div class="event">
+<h3>Special Meetings</h3>
+<p>Announcements about upcoming ministry gatherings.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="shop" id="shop">
+<div class="container shop-grid">
+
+<div class="stage">
+<div class="bottle">
+<div class="label">
+<svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="gold" x1="0" x2="1">
+<stop stop-color="#fff0a8"/>
+<stop offset=".5" stop-color="#d7a82f"/>
+<stop offset="1" stop-color="#fff0a8"/>
+</linearGradient>
+<linearGradient id="blue" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#168bd1"/>
+<stop offset="1" stop-color="#052c75"/>
+</linearGradient>
+</defs>
+<circle cx="150" cy="180" r="143" fill="url(#blue)" stroke="url(#gold)" stroke-width="8"/>
+<circle cx="150" cy="180" r="132" fill="none" stroke="white" stroke-width="2"/>
+<path d="M25 155 Q75 120 110 153 T205 150 T275 145 L275 215 Q220 245 175 220 T80 225 T25 215Z" fill="#8bdcff"/>
+<path d="M35 170 Q80 145 120 173 T200 170 T265 165" fill="none" stroke="white" stroke-width="7"/>
+<path d="M150 38 V105 M120 62 H180" stroke="url(#gold)" stroke-width="13" stroke-linecap="round"/>
+<path d="M96 119 Q150 94 204 119 L192 139 H108Z" fill="#fff2cf" stroke="#d9b45a" stroke-width="3"/>
+<text x="150" y="166" font-family="Georgia" font-size="30" font-weight="bold" text-anchor="middle" fill="white">LIVING</text>
+<text x="150" y="202" font-family="Georgia" font-size="34" font-weight="bold" text-anchor="middle" fill="white">WATER</text>
+<path d="M45 224 Q150 205 255 224 L255 266 Q150 286 45 266Z" fill="#09275e" stroke="url(#gold)" stroke-width="3"/>
+<text x="150" y="253" font-family="Georgia" font-size="24" font-weight="bold" text-anchor="middle" fill="white">N.L CENTRE</text>
+<rect x="88" y="278" width="124" height="37" rx="18" fill="url(#gold)" stroke="white" stroke-width="2"/>
+<text x="150" y="304" font-family="Arial" font-size="23" font-weight="bold" text-anchor="middle" fill="#09275e">1 LITRE</text>
+</svg>
+</div>
+</div>
+</div>
+
+<div>
+<div class="eyebrow">New Life Centre shop</div>
+<h2>Living Water</h2>
+<div class="price">KSh 1,000</div>
+<p>Living Water – one litre bottle with the N.L Centre branded label.</p>
+<div class="pills">
+<span>1 Litre</span>
+<span>N.L Centre</span>
+<span>KSh 1,000 each</span>
+</div>
+<br>
+<input class="quantity" type="number" id="quantity" min="1" max="20" value="1">
+<button class="btn btn-dark" onclick="openCheckout()">Order with M-Pesa</button>
+<p><small>Payments are currently intended for Daraja Sandbox testing. Sandbox payments are not real money transfers.</small></p>
+</div>
+
+</div>
+</section>
+
+<section class="giving" id="giving">
+<div class="container">
+<div class="heading">
+<div class="eyebrow">Support the ministry</div>
+<h2>Giving</h2>
+</div>
+<div class="giving-box">
+<h3>Ministry Giving</h3>
+<p>Official ministry giving instructions and payment channels will be added after confirmation by New Life Centre.</p>
+</div>
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div>
+<h3>NEW LIFE MAVUENI</h3>
+<p>New Life Centre</p>
+</div>
+<div>
+<h3>Locations</h3>
+<p>Mavueni, Kilifi County, Kenya</p>
+</div>
+<div>
+<h3>Email</h3>
+<p><a href="mailto:bahatifoundation83@gmail.com">bahatifoundation83@gmail.com</a></p>
+</div>
+</div>
+<div class="copyright">
+© <span id="year"></span> New Life Mavueni. All rights reserved.
+</div>
+</div>
+</footer>
+
+<div class="modal-bg" id="checkout">
+<div class="modal">
+<h2>Living Water Order</h2>
+<p>Enter the customer's details to begin the M-Pesa Sandbox payment.</p>
+
+<form id="orderForm">
+<label class="field">
+<span>Full name</span>
+<input name="name" required>
+</label>
+
+<label class="field">
+<span>Kenyan M-Pesa phone number</span>
+<input name="phone" placeholder="07XXXXXXXX" required>
+</label>
+
+<label class="field">
+<span>Delivery or collection location</span>
+<input name="location" required>
+</label>
+
+<label class="field">
+<span>Quantity</span>
+<input name="quantity" id="modalQuantity" type="number" min="1" max="20" value="1" required>
+</label>
+
+<p><strong>Total: KSh <span id="total">1000</span></strong></p>
+
+<button class="btn btn-dark" type="submit" id="payButton">Send M-Pesa Prompt</button>
+<button class="btn" type="button" onclick="closeCheckout()">Cancel</button>
+
+<div class="status" id="status"></div>
+</form>
+</div>
+</div>
+
+<script>
+document.getElementById("year").textContent=new Date().getFullYear();
+
+const checkout=document.getElementById("checkout");
+const modalQuantity=document.getElementById("modalQuantity");
+const total=document.getElementById("total");
+const statusBox=document.getElementById("status");
+
+function openCheckout(){
+let q=Math.max(1,Math.min(20,Number(document.getElementById("quantity").value)||1));
+modalQuantity.value=q;
+updateTotal();
+checkout.classList.add("open");
+}
+
+function closeCheckout(){
+checkout.classList.remove("open");
+}
+
+function updateTotal(){
+let q=Math.max(1,Math.min(20,Number(modalQuantity.value)||1));
+modalQuantity.value=q;
+total.textContent=(q*1000).toLocaleString("en-KE");
+}
+
+modalQuantity.addEventListener("input",updateTotal);
+
+function normalizePhone(phone){
+let p=phone.replace(/[\s+()-]/g,"");
+if(/^0[17]\d{8}$/.test(p))return "254"+p.substring(1);
+if(/^254[17]\d{8}$/.test(p))return p;
+return null;
+}
+
+document.getElementById("orderForm").addEventListener("submit",async function(e){
+e.preventDefault();
+
+const data=Object.fromEntries(new FormData(this).entries());
+const phone=normalizePhone(data.phone);
+
+if(!phone){
+statusBox.textContent="Enter a valid Kenyan phone number.";
+statusBox.className="status show";
+return;
+}
+
+const quantity=Math.max(1,Math.min(20,Number(data.quantity)||1));
+const amount=quantity*1000;
+const button=document.getElementById("payButton");
+
+button.disabled=true;
+button.textContent="Sending request...";
+statusBox.textContent="Connecting to M-Pesa Sandbox...";
+statusBox.className="status show";
+
+try{
+const response=await fetch("/.netlify/functions/mpesa-stk",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+name:data.name,
+phone:phone,
+location:data.location,
+quantity:quantity,
+amount:amount
+})
+});
+
+const result=await response.json();
+
+if(!response.ok)throw new Error(result.error||"Payment request failed.");
+
+statusBox.textContent=result.message||"Sandbox payment request sent. Check the test phone.";
+}catch(error){
+statusBox.textContent=error.message+" Please check the Daraja configuration.";
+}finally{
+button.disabled=false;
+button.textContent="Send M-Pesa Prompt";
+}
+});
+</script>
+
+</body>
+</html>
