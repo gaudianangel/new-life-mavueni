@@ -6,36 +6,48 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#092d25">
 <title>New Life Mavueni | New Life Centre</title>
-<meta name="description" content="New Life Mavueni ministry, crusades, sermons and Living Water.">
+<meta name="description" content="New Life Mavueni ministry, crusades, sermons, Living Water, prayer requests and choir support.">
 
 <style>
-:root{--green:#092d25;--deep:#061e19;--gold:#d8b45b;--cream:#f7f5ef;--text:#26332d}
+:root{
+--green:#092d25;
+--deep:#061e19;
+--gold:#d8b45b;
+--cream:#f7f5ef;
+--text:#26332d;
+}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:Arial,sans-serif;color:var(--text);line-height:1.6}
 a{text-decoration:none;color:inherit}
 .container{width:92%;max-width:1150px;margin:auto}
-.top{background:var(--deep);color:white;padding:9px;font-size:13px;text-align:center}
+.top{background:var(--deep);color:white;padding:9px;text-align:center;font-size:13px}
 header{background:var(--green);color:white;position:sticky;top:0;z-index:10}
 nav{display:flex;justify-content:space-between;align-items:center;min-height:75px;gap:15px}
 .brand{font-weight:bold;font-size:18px;letter-spacing:1px}
 .brand small{display:block;color:var(--gold);font-size:10px}
-.links{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.links{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 .links a:hover{color:var(--gold)}
 .menu{display:none;background:transparent;color:white;border:1px solid white;padding:8px}
-.hero{padding:115px 0;background:linear-gradient(90deg,#061e19ed,#061e1980),url('https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1800&q=80') center/cover;color:white}
-.hero h1{font: bold clamp(38px,6vw,68px) Georgia;line-height:1.1;max-width:750px}
+.hero{
+padding:115px 0;
+background:linear-gradient(90deg,#061e19ed,#061e1980),
+url('https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1800&q=80') center/cover;
+color:white
+}
+.hero h1{font:bold clamp(38px,6vw,68px) Georgia;line-height:1.1;max-width:750px}
 .hero p{max-width:650px;font-size:18px;color:#eee}
 .eyebrow{color:var(--gold);font-weight:bold;letter-spacing:2px;text-transform:uppercase;font-size:12px}
 .btn{display:inline-block;padding:13px 21px;background:var(--gold);color:#17251e;border-radius:4px;font-weight:bold;border:0;cursor:pointer}
 .btn-dark{background:var(--green);color:white}
+.btn:disabled{opacity:.6;cursor:wait}
 section{padding:75px 0}
 .heading{text-align:center;margin-bottom:38px}
-.heading h2{font: bold 38px Georgia;color:var(--green);margin:8px}
+.heading h2{font:bold 38px Georgia;color:var(--green);margin:8px}
 .heading p{color:#69766f}
 .about{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
 .about-photo{height:370px;border-radius:8px;background:url('https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1000&q=80') center/cover}
-.about h2,.pastor h2,.shop h2{font: bold 38px Georgia;color:var(--green)}
+.about h2,.pastor h2,.shop h2{font:bold 38px Georgia;color:var(--green)}
 .values{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .values div{background:var(--cream);padding:15px;font-weight:bold;color:var(--green)}
 .pastor{background:var(--cream)}
@@ -43,25 +55,32 @@ section{padding:75px 0}
 .pastor-photo{height:300px;background:#e4e8e2;border:2px dashed #9aa69c;display:grid;place-items:center;text-align:center;padding:20px;color:#53635a}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .card{border:1px solid #e2e6e2;border-radius:7px;padding:24px}
-.card h3{color:var(--green);font: bold 22px Georgia}
+.card h3{color:var(--green);font:bold 22px Georgia}
 .events{background:var(--green);color:white}
 .events .heading h2{color:white}
 .events .heading p{color:#ddd}
 .event{background:white;color:#26332d;border-radius:7px;padding:24px}
-.event h3{color:var(--green);font: bold 23px Georgia}
+.event h3{color:var(--green);font:bold 23px Georgia}
 .shop{background:#fff}
 .shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center}
-.stage{min-height:470px;background:linear-gradient(145deg,#e9f5f9,#d2e8ee);border-radius:12px;display:grid;place-items:center;padding:30px}
-.bottle{width:190px;height:360px;position:relative;border:2px solid #9bbbc9;border-radius:35px 35px 24px 24px;background:linear-gradient(90deg,#b6d9e6aa,#ffffffcc,#b6d9e6aa);box-shadow:15px 15px 25px #0002;display:flex;align-items:center;justify-content:center}
+.stage{min-height:430px;background:linear-gradient(145deg,#e9f5f9,#d2e8ee);border-radius:12px;display:grid;place-items:center;padding:30px}
+.bottle{width:190px;height:350px;position:relative;border:2px solid #9bbbc9;border-radius:35px 35px 24px 24px;background:linear-gradient(90deg,#b6d9e6aa,#ffffffcc,#b6d9e6aa);box-shadow:15px 15px 25px #0002;display:flex;align-items:center;justify-content:center}
 .bottle:before{content:"";position:absolute;top:-42px;width:76px;height:47px;background:#174d81;border:2px solid #103b66;border-radius:8px 8px 3px 3px}
 .bottle:after{content:"";position:absolute;top:-7px;width:90px;height:17px;background:#d7eaf0;border:1px solid #9bbbc9;border-radius:5px}
-.label{width:100%;background:white;padding:5px;border-top:3px solid var(--gold);border-bottom:3px solid var(--gold)}
-.label svg{width:100%;display:block}
+.label{width:100%;background:white;padding:9px 5px;border-top:3px solid var(--gold);border-bottom:3px solid var(--gold);text-align:center}
+.label .cross{font-size:30px;color:#b18b37}
+.label strong{display:block;font: bold 21px Georgia;color:#092d25}
+.label small{display:block;color:#092d25;font-size:11px;font-weight:bold}
+.label .water{font: bold 26px Georgia;color:#174d81}
+.label .church{background:#092d25;color:white;padding:7px;margin-top:8px;font-size:12px}
 .price{font-size:30px;font-weight:bold;color:#a17c29}
 .pills span{display:inline-block;background:#f4f0e5;padding:7px 12px;border-radius:30px;margin:4px;font-size:12px}
-.quantity{padding:12px;width:75px;border:1px solid #aaa;border-radius:4px;font-size:16px}
 .giving{background:var(--cream)}
-.giving-box{max-width:750px;margin:auto;background:white;padding:30px;text-align:center;border-radius:8px}
+.giving-box{max-width:850px;margin:auto;background:white;padding:30px;text-align:center;border-radius:8px}
+.giving-options{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:25px;text-align:left}
+.giving-option{border:1px solid #e2e6e2;padding:20px;border-radius:7px}
+.giving-option h3{color:var(--green)}
+.giving-option strong{font-size:22px;color:#a17c29}
 footer{background:var(--deep);color:white;padding:40px 0}
 .footer-grid{display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap}
 footer h3{color:var(--gold)}
@@ -69,13 +88,19 @@ footer p{color:#ddd}
 .copyright{border-top:1px solid #ffffff33;margin-top:25px;padding-top:18px;font-size:13px}
 .modal-bg{display:none;position:fixed;inset:0;background:#0009;z-index:30;align-items:center;justify-content:center;padding:15px}
 .modal-bg.open{display:flex}
-.modal{background:white;padding:25px;border-radius:9px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
-.modal h2{color:var(--green)}
+.modal{background:white;padding:25px;border-radius:9px;width:100%;max-width:490px;max-height:92vh;overflow:auto}
+.modal h2{color:var(--green);margin-top:0}
 .field{display:block;margin:13px 0}
-.field span{display:block;font-weight:bold;font-size:13px}
-.field input{width:100%;padding:12px;border:1px solid #bbb;border-radius:4px;font-size:16px}
-.status{display:none;padding:12px;background:#f5f0df;margin-top:15px}
+.field span{display:block;font-weight:bold;font-size:13px;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:12px;border:1px solid #bbb;border-radius:4px;font-size:16px;font-family:Arial}
+.field textarea{min-height:85px;resize:vertical}
+.summary{background:var(--cream);padding:16px;border-radius:6px;margin:15px 0}
+.summary strong{color:var(--green)}
+.status{display:none;padding:13px;background:#f5f0df;margin-top:15px;border-radius:5px;overflow-wrap:anywhere}
 .status.show{display:block}
+.status.error{background:#fbe7e7;color:#8c2020}
+.status.success{background:#e6f4e9;color:#155b2c}
+.note{font-size:12px;color:#69766f}
 @media(max-width:800px){
 .menu{display:block}
 .links{display:none;position:absolute;top:75px;left:0;right:0;background:var(--green);padding:20px;flex-direction:column}
@@ -83,15 +108,14 @@ footer p{color:#ddd}
 .about,.shop-grid,.pastor-box{grid-template-columns:1fr}
 .cards{grid-template-columns:1fr}
 .about-photo{height:260px}
+.giving-options{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
 
-<div class="top">
-NEW LIFE MAVUENI | NEW LIFE CENTRE
-</div>
+<div class="top">NEW LIFE MAVUENI | NEW LIFE CENTRE</div>
 
 <header>
 <div class="container">
@@ -151,10 +175,7 @@ NEW LIFE MAVUENI
 <h2>Pastor Ezekiel Odero</h2>
 </div>
 <div class="pastor-box">
-<div class="pastor-photo">
-PASTOR'S PHOTOGRAPH<br>
-Replace with approved ministry photo
-</div>
+<div class="pastor-photo">PASTOR'S PHOTOGRAPH<br>Replace with approved ministry photo</div>
 <div>
 <h2>Pastor Ezekiel Odero</h2>
 <p>This section is reserved for the approved pastor biography, ministry message and official photographs.</p>
@@ -213,56 +234,46 @@ Replace with approved ministry photo
 </section>
 
 <section class="shop" id="shop">
-<div class="container shop-grid">
+<div class="container">
+<div class="heading">
+<div class="eyebrow">New Life Centre Shop</div>
+<h2>Living Water</h2>
+<p>Living Water bottled under the New Life Church branding.</p>
+</div>
 
+<div class="shop-grid">
 <div class="stage">
 <div class="bottle">
 <div class="label">
-<svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="gold" x1="0" x2="1">
-<stop stop-color="#fff0a8"/>
-<stop offset=".5" stop-color="#d7a82f"/>
-<stop offset="1" stop-color="#fff0a8"/>
-</linearGradient>
-<linearGradient id="blue" x1="0" y1="0" x2="0" y2="1">
-<stop stop-color="#168bd1"/>
-<stop offset="1" stop-color="#052c75"/>
-</linearGradient>
-</defs>
-<circle cx="150" cy="180" r="143" fill="url(#blue)" stroke="url(#gold)" stroke-width="8"/>
-<circle cx="150" cy="180" r="132" fill="none" stroke="white" stroke-width="2"/>
-<path d="M25 155 Q75 120 110 153 T205 150 T275 145 L275 215 Q220 245 175 220 T80 225 T25 215Z" fill="#8bdcff"/>
-<path d="M35 170 Q80 145 120 173 T200 170 T265 165" fill="none" stroke="white" stroke-width="7"/>
-<path d="M150 38 V105 M120 62 H180" stroke="url(#gold)" stroke-width="13" stroke-linecap="round"/>
-<path d="M96 119 Q150 94 204 119 L192 139 H108Z" fill="#fff2cf" stroke="#d9b45a" stroke-width="3"/>
-<text x="150" y="166" font-family="Georgia" font-size="30" font-weight="bold" text-anchor="middle" fill="white">LIVING</text>
-<text x="150" y="202" font-family="Georgia" font-size="34" font-weight="bold" text-anchor="middle" fill="white">WATER</text>
-<path d="M45 224 Q150 205 255 224 L255 266 Q150 286 45 266Z" fill="#09275e" stroke="url(#gold)" stroke-width="3"/>
-<text x="150" y="253" font-family="Georgia" font-size="24" font-weight="bold" text-anchor="middle" fill="white">N.L CENTRE</text>
-<rect x="88" y="278" width="124" height="37" rx="18" fill="url(#gold)" stroke="white" stroke-width="2"/>
-<text x="150" y="304" font-family="Arial" font-size="23" font-weight="bold" text-anchor="middle" fill="#09275e">1 LITRE</text>
-</svg>
+<div class="cross">✝</div>
+<strong>LIVING</strong>
+<div class="water">WATER</div>
+<div class="church">NEWLIFE CHURCH</div>
+<small>NEW LIFE MAVUENI</small>
 </div>
 </div>
 </div>
 
 <div>
-<div class="eyebrow">New Life Centre shop</div>
-<h2>Living Water</h2>
-<div class="price">KSh 1,000</div>
-<p>Living Water – one litre bottle with the N.L Centre branded label.</p>
-<div class="pills">
-<span>1 Litre</span>
-<span>N.L Centre</span>
-<span>KSh 1,000 each</span>
-</div>
-<br>
-<input class="quantity" type="number" id="quantity" min="1" max="20" value="1">
-<button class="btn btn-dark" onclick="openCheckout()">Order with M-Pesa</button>
-<p><small>Payments are currently intended for Daraja Sandbox testing. Sandbox payments are not real money transfers.</small></p>
+<div class="eyebrow">Living Water Collection</div>
+<h2>LIVING WATER<br>NEWLIFE CHURCH</h2>
+<p>Choose your preferred bottle size and order through M-PESA.</p>
+
+<div class="card">
+<h3>500ml Bottle</h3>
+<div class="price">KSh 500</div>
+<p>Living Water – 500ml bottle.</p>
+<button class="btn btn-dark" onclick="openCheckout('water_500ml')">Order 500ml</button>
 </div>
 
+<div class="card" style="margin-top:15px">
+<h3>1 Litre Bottle</h3>
+<div class="price">KSh 1,000</div>
+<p>Living Water – 1 litre bottle.</p>
+<button class="btn btn-dark" onclick="openCheckout('water_1l')">Order 1 Litre</button>
+</div>
+</div>
+</div>
 </div>
 </section>
 
@@ -270,11 +281,27 @@ Replace with approved ministry photo
 <div class="container">
 <div class="heading">
 <div class="eyebrow">Support the ministry</div>
-<h2>Giving</h2>
+<h2>Prayer and Giving</h2>
+<p>Submit a prayer request or support the church choir.</p>
 </div>
+
 <div class="giving-box">
-<h3>Ministry Giving</h3>
-<p>Official ministry giving instructions and payment channels will be added after confirmation by New Life Centre.</p>
+<h3>How would you like to participate?</h3>
+<div class="giving-options">
+<div class="giving-option">
+<h3>Prayer Request</h3>
+<strong>KSh 700</strong>
+<p>Submit your prayer request to the ministry.</p>
+<button class="btn btn-dark" onclick="openCheckout('prayer_request')">Submit Prayer Request</button>
+</div>
+
+<div class="giving-option">
+<h3>Support the Choir</h3>
+<strong>KSh 200</strong>
+<p>Contribute towards supporting the church choir.</p>
+<button class="btn btn-dark" onclick="openCheckout('support_choir')">Support Choir</button>
+</div>
+</div>
 </div>
 </div>
 </section>
@@ -289,7 +316,7 @@ Replace with approved ministry photo
 <p>New Life Centre</p>
 </div>
 <div>
-<h3>Locations</h3>
+<h3>Location</h3>
 <p>Mavueni, Kilifi County, Kenya</p>
 </div>
 <div>
@@ -305,119 +332,260 @@ Replace with approved ministry photo
 
 <div class="modal-bg" id="checkout">
 <div class="modal">
-<h2>Living Water Order</h2>
-<p>Enter the customer's details to begin the M-Pesa Sandbox payment.</p>
+<h2 id="checkoutTitle">Payment</h2>
+<p id="checkoutDescription">Enter your details to continue.</p>
 
 <form id="orderForm">
+
 <label class="field">
 <span>Full name</span>
-<input name="name" required>
+<input name="name" required maxlength="100" placeholder="Enter your full name">
 </label>
 
 <label class="field">
-<span>Kenyan M-Pesa phone number</span>
-<input name="phone" placeholder="07XXXXXXXX" required>
+<span>Your M-PESA phone number</span>
+<input name="phone" required inputmode="tel" autocomplete="tel" placeholder="07XXXXXXXX">
 </label>
 
+<div id="waterFields">
 <label class="field">
 <span>Delivery or collection location</span>
-<input name="location" required>
+<input name="location" id="location" maxlength="200" placeholder="Enter your location">
 </label>
 
 <label class="field">
-<span>Quantity</span>
-<input name="quantity" id="modalQuantity" type="number" min="1" max="20" value="1" required>
+<span>Bottle quantity</span>
+<input name="quantity" id="modalQuantity" type="number" min="1" max="20" value="1">
 </label>
+</div>
 
-<p><strong>Total: KSh <span id="total">1000</span></strong></p>
+<div id="prayerFields" style="display:none">
+<label class="field">
+<span>Your prayer request</span>
+<textarea name="prayer" id="prayer" maxlength="1000" placeholder="Write your prayer request here"></textarea>
+</label>
+</div>
 
-<button class="btn btn-dark" type="submit" id="payButton">Send M-Pesa Prompt</button>
+<div class="summary">
+<strong>Selected option:</strong>
+<div id="selectedItem">500ml Living Water</div>
+<strong>Total: KSh <span id="total">500</span></strong>
+</div>
+
+<button class="btn btn-dark" type="submit" id="payButton">Send M-PESA Prompt</button>
 <button class="btn" type="button" onclick="closeCheckout()">Cancel</button>
 
-<div class="status" id="status"></div>
+<div class="status" id="status" role="status" aria-live="polite"></div>
+
+<p class="note">Your phone number is used to send the payment prompt. It is not displayed publicly on this website.</p>
 </form>
 </div>
 </div>
 
 <script>
-document.getElementById("year").textContent=new Date().getFullYear();
+document.getElementById("year").textContent = new Date().getFullYear();
 
-const checkout=document.getElementById("checkout");
-const modalQuantity=document.getElementById("modalQuantity");
-const total=document.getElementById("total");
-const statusBox=document.getElementById("status");
+const checkout = document.getElementById("checkout");
+const form = document.getElementById("orderForm");
+const quantityInput = document.getElementById("modalQuantity");
+const total = document.getElementById("total");
+const statusBox = document.getElementById("status");
+const payButton = document.getElementById("payButton");
 
-function openCheckout(){
-let q=Math.max(1,Math.min(20,Number(document.getElementById("quantity").value)||1));
-modalQuantity.value=q;
-updateTotal();
-checkout.classList.add("open");
+const products = {
+  water_500ml: {
+    name: "500ml Living Water",
+    price: 500,
+    quantityAllowed: true
+  },
+  water_1l: {
+    name: "1 Litre Living Water",
+    price: 1000,
+    quantityAllowed: true
+  },
+  prayer_request: {
+    name: "Prayer Request",
+    price: 700,
+    quantityAllowed: false
+  },
+  support_choir: {
+    name: "Support Choir",
+    price: 200,
+    quantityAllowed: false
+  }
+};
+
+let selectedProduct = "water_500ml";
+
+function openCheckout(product) {
+  if (!products[product]) return;
+
+  selectedProduct = product;
+  form.reset();
+
+  quantityInput.value = 1;
+
+  document.getElementById("waterFields").style.display =
+    products[product].quantityAllowed ? "block" : "none";
+
+  document.getElementById("prayerFields").style.display =
+    product === "prayer_request" ? "block" : "none";
+
+  document.getElementById("location").required =
+    products[product].quantityAllowed;
+
+  document.getElementById("prayer").required =
+    product === "prayer_request";
+
+  document.getElementById("checkoutTitle").textContent =
+    products[product].name;
+
+  document.getElementById("checkoutDescription").textContent =
+    product === "prayer_request"
+      ? "Enter your details and prayer request."
+      : product === "support_choir"
+      ? "Enter your details to support the church choir."
+      : "Enter your details to order Living Water.";
+
+  document.getElementById("selectedItem").textContent =
+    products[product].name;
+
+  statusBox.className = "status";
+  statusBox.textContent = "";
+
+  updateTotal();
+  checkout.classList.add("open");
 }
 
-function closeCheckout(){
-checkout.classList.remove("open");
+function closeCheckout() {
+  if (payButton.disabled) return;
+  checkout.classList.remove("open");
 }
 
-function updateTotal(){
-let q=Math.max(1,Math.min(20,Number(modalQuantity.value)||1));
-modalQuantity.value=q;
-total.textContent=(q*1000).toLocaleString("en-KE");
+function updateTotal() {
+  const item = products[selectedProduct];
+
+  let quantity = item.quantityAllowed
+    ? Math.max(1, Math.min(20, Number(quantityInput.value) || 1))
+    : 1;
+
+  quantityInput.value = quantity;
+
+  total.textContent =
+    (item.price * quantity).toLocaleString("en-KE");
 }
 
-modalQuantity.addEventListener("input",updateTotal);
+quantityInput.addEventListener("input", updateTotal);
 
-function normalizePhone(phone){
-let p=phone.replace(/[\s+()-]/g,"");
-if(/^0[17]\d{8}$/.test(p))return "254"+p.substring(1);
-if(/^254[17]\d{8}$/.test(p))return p;
-return null;
+function normalizePhone(phone) {
+  let p = phone.replace(/[\s+()-]/g, "");
+
+  if (/^0[17]\d{8}$/.test(p)) {
+    return "254" + p.substring(1);
+  }
+
+  if (/^254[17]\d{8}$/.test(p)) {
+    return p;
+  }
+
+  return null;
 }
 
-document.getElementById("orderForm").addEventListener("submit",async function(e){
-e.preventDefault();
-
-const data=Object.fromEntries(new FormData(this).entries());
-const phone=normalizePhone(data.phone);
-
-if(!phone){
-statusBox.textContent="Enter a valid Kenyan phone number.";
-statusBox.className="status show";
-return;
+function showStatus(message, type) {
+  statusBox.textContent = message;
+  statusBox.className = "status show " + (type || "");
 }
 
-const quantity=Math.max(1,Math.min(20,Number(data.quantity)||1));
-const amount=quantity*1000;
-const button=document.getElementById("payButton");
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
 
-button.disabled=true;
-button.textContent="Sending request...";
-statusBox.textContent="Connecting to M-Pesa Sandbox...";
-statusBox.className="status show";
+  const data = Object.fromEntries(new FormData(form).entries());
 
-try{
-const response=await fetch("/.netlify/functions/mpesa-stk",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-name:data.name,
-phone:phone,
-location:data.location,
-quantity:quantity,
-amount:amount
-})
+  const phone = normalizePhone(data.phone);
+
+  if (!phone) {
+    showStatus("Please enter a valid Kenyan M-PESA number.", "error");
+    return;
+  }
+
+  const item = products[selectedProduct];
+
+  const quantity = item.quantityAllowed
+    ? Number(data.quantity)
+    : 1;
+
+  if (
+    !Number.isInteger(quantity) ||
+    quantity < 1 ||
+    quantity > 20
+  ) {
+    showStatus("Please enter a valid quantity.", "error");
+    return;
+  }
+
+  if (selectedProduct === "prayer_request" && !data.prayer.trim()) {
+    showStatus("Please enter your prayer request.", "error");
+    return;
+  }
+
+  const amount = item.price * quantity;
+
+  payButton.disabled = true;
+  payButton.textContent = "Sending request...";
+
+  showStatus("Connecting to M-PESA. Please wait.", "");
+
+  try {
+    const response = await fetch("/.netlify/functions/mpesa-stk", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: data.name,
+        phone: phone,
+        location: data.location || "",
+        prayer: data.prayer || "",
+        product: selectedProduct,
+        quantity: quantity,
+        amount: amount
+      })
+    });
+
+    const responseText = await response.text();
+
+    let result;
+
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      throw new Error(
+        "The payment server returned an invalid response. Please check the Netlify function logs."
+      );
+    }
+
+    if (!response.ok) {
+      throw new Error(result.error || "Payment request failed.");
+    }
+
+    showStatus(
+      (result.message || "Payment request accepted for processing.") +
+      " Check the customer's phone for an M-PESA prompt. This is not yet confirmation of a completed payment.",
+      ""
+    );
+
+  } catch (error) {
+    showStatus(error.message, "error");
+  } finally {
+    payButton.disabled = false;
+    payButton.textContent = "Send M-PESA Prompt";
+  }
 });
 
-const result=await response.json();
-
-if(!response.ok)throw new Error(result.error||"Payment request failed.");
-
-statusBox.textContent=result.message||"Sandbox payment request sent. Check the test phone.";
-}catch(error){
-statusBox.textContent=error.message+" Please check the Daraja configuration.";
-}finally{
-button.disabled=false;
-button.textContent="Send M-Pesa Prompt";
-}
+checkout.addEventListener("click", function(e) {
+  if (e.target === checkout && !payButton.disabled) {
+    closeCheckout();
+  }
 });
 </script>
 
