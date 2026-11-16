@@ -36,16 +36,14 @@ function requestJson(url, options = {}) {
 }
 
 exports.handler = async (event) => {
-
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      body: JSON.stringify({error:"Method not allowed"})
+      body: JSON.stringify({ error: "Method not allowed" })
     };
   }
 
   try {
-
     const {
       MPESA_CONSUMER_KEY,
       MPESA_CONSUMER_SECRET,
@@ -54,33 +52,67 @@ exports.handler = async (event) => {
       MPESA_CALLBACK_URL
     } = process.env;
 
-    if (!MPESA_CONSUMER_KEY ||
-        !MPESA_CONSUMER_SECRET ||
-        !MPESA_SHORTCODE ||
-        !MPESA_PASSKEY ||
-        !MPESA_CALLBACK_URL) {
-
-      throw new Error("M-Pesa environment variables are missing.");
+    if (
+      !MPESA_CONSUMER_KEY ||
+      !MPESA_CONSUMER_SECRET ||
+      !MPESA_SHORTCODE ||
+      !MPESA_PASSKEY ||
+      !MPESA_CALLBACK_URL
+    ) {
+      throw new Error("M-PESA environment variables are missing.");
     }
 
     const data = JSON.parse(event.body || "{}");
 
-    const phone = String(data.phone || "");
-    const amount = Number(data.amount);
-    const quantity = Number(data.quantity);
+    let phone = String(data.phone || "").replace(/\s+/g, "");
+
+    if (/^0[17]\d{8}$/.test(phone)) {
+      phone = "254" + phone.substring(1);
+    }
 
     if (!/^254[17]\d{8}$/.test(phone)) {
-      throw new Error("Invalid Kenyan phone number.");
+      throw new Error("Enter a valid Kenyan M-PESA number.");
     }
+
+    const products = {
+      water_500ml: {
+        price: 500,
+        name: "500ml Living Water"
+      },
+      water_1l: {
+        price: 1000,
+        name: "1L Living Water"
+      },
+      prayer_request: {
+        price: 700,
+        name: "Prayer Request"
+      },
+      support_choir: {
+        price: 200,
+        name: "Choir Support"
+      }
+    };
+
+    const item = products[data.product];
+
+    if (!item) {
+      throw new Error("Invalid payment option.");
+    }
+
+    const quantity = Number(data.quantity || 1);
 
     if (
       !Number.isInteger(quantity) ||
       quantity < 1 ||
       quantity > 20 ||
-      amount !== quantity * 1000
+      (data.product !== "water_500ml" &&
+       data.product !== "water_1l" &&
+       quantity !== 1)
     ) {
-      throw new Error("Invalid order amount.");
+      throw new Error("Invalid quantity.");
     }
+
+    const amount = item.price * quantity;
 
     const auth = Buffer.from(
       MPESA_CONSUMER_KEY + ":" + MPESA_CONSUMER_SECRET
@@ -99,7 +131,7 @@ exports.handler = async (event) => {
     const timestamp = new Date()
       .toISOString()
       .replace(/[-:TZ.]/g, "")
-      .slice(0,14);
+      .slice(0, 14);
 
     const password = Buffer.from(
       MPESA_SHORTCODE + MPESA_PASSKEY + timestamp
@@ -114,23 +146,17 @@ exports.handler = async (event) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-
           BusinessShortCode: MPESA_SHORTCODE,
           Password: password,
           Timestamp: timestamp,
-
           TransactionType: "CustomerPayBillOnline",
-
           Amount: amount,
           PartyA: phone,
           PartyB: MPESA_SHORTCODE,
           PhoneNumber: phone,
-
           CallBackURL: MPESA_CALLBACK_URL,
-
-          AccountReference: "NEWLIFEMAVUENI",
-          TransactionDesc: "Living Water " + quantity + "L"
-
+          AccountReference: "NEWLIFE",
+          TransactionDesc: item.name.substring(0, 13)
         })
       }
     );
@@ -142,14 +168,15 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         message: payment.CustomerMessage ||
-          "M-Pesa Sandbox request accepted.",
+          "Payment request accepted for processing.",
         checkoutRequestID: payment.CheckoutRequestID,
-        merchantRequestID: payment.MerchantRequestID
+        merchantRequestID: payment.MerchantRequestID,
+        amount: amount,
+        item: item.name
       })
     };
 
   } catch (error) {
-
     return {
       statusCode: 500,
       headers: {
@@ -159,6 +186,5 @@ exports.handler = async (event) => {
         error: error.message
       })
     };
-
   }
 };
