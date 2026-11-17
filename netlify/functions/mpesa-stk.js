@@ -11,20 +11,18 @@ function requestJson(url, options = {}) {
       res.on("end", () => {
         let result = null;
 
-        if (body) {
-          try {
-            result = JSON.parse(body);
-          } catch {
-            return reject(new Error("Invalid server response."));
-          }
+        try {
+          result = body ? JSON.parse(body) : {};
+        } catch {
+          return reject(new Error("Invalid server response."));
         }
 
         if (res.statusCode < 200 || res.statusCode >= 300) {
           return reject(new Error(
-            result?.message ||
             result?.errorMessage ||
+            result?.message ||
             result?.error ||
-            "Request failed."
+            `Request failed with HTTP ${res.statusCode}.`
           ));
         }
 
@@ -42,14 +40,14 @@ function requestJson(url, options = {}) {
 
 async function updateOrder(supabaseUrl, secretKey, orderId, values) {
   return requestJson(
-    `${supabaseUrl}/rest/v1/orders?id=eq.${orderId}`,
+    `${supabaseUrl}/rest/v1/orders?id=eq.${encodeURIComponent(orderId)}`,
     {
       method: "PATCH",
       headers: {
-        "apikey": secretKey,
-        "Authorization": "Bearer " + secretKey,
+        apikey: secretKey,
+        Authorization: "Bearer " + secretKey,
         "Content-Type": "application/json",
-        "Prefer": "return=minimal"
+        Prefer: "return=minimal"
       },
       body: JSON.stringify(values)
     }
@@ -60,6 +58,7 @@ exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Method not allowed" })
     };
   }
@@ -67,6 +66,7 @@ exports.handler = async (event) => {
   let orderId = null;
   let supabaseUrl = "";
   let secretKey = "";
+  let stage = "checking configuration";
 
   try {
     const {
@@ -95,6 +95,10 @@ exports.handler = async (event) => {
 
     supabaseUrl = SUPABASE_URL.replace(/\/+$/, "");
     secretKey = SUPABASE_SECRET_KEY;
+
+    if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(supabaseUrl)) {
+      throw new Error("Supabase URL format is invalid.");
+    }
 
     const data = JSON.parse(event.body || "{}");
 
@@ -171,23 +175,25 @@ exports.handler = async (event) => {
       throw new Error("Please enter your prayer request.");
     }
 
-    // Save the order before requesting payment.
+    // Save order
+    stage = "saving order to Supabase";
+
     const savedOrders = await requestJson(
       `${supabaseUrl}/rest/v1/orders`,
       {
         method: "POST",
         headers: {
-          "apikey": secretKey,
-          "Authorization": "Bearer " + secretKey,
+          apikey: secretKey,
+          Authorization: "Bearer " + secretKey,
           "Content-Type": "application/json",
-          "Prefer": "return=representation"
+          Prefer: "return=representation"
         },
         body: JSON.stringify({
           customer_name: name,
           customer_phone: phone,
           product: data.product,
-          quantity: quantity,
-          amount: amount,
+          quantity,
+          amount,
           delivery_location: location || null,
           prayer_request: prayer || null,
           payment_status: "pending"
@@ -201,7 +207,9 @@ exports.handler = async (event) => {
 
     orderId = savedOrders[0].id;
 
-    // Get the Daraja access token.
+    // Get Daraja access token
+    stage = "requesting Daraja access token";
+
     const auth = Buffer.from(
       MPESA_CONSUMER_KEY + ":" + MPESA_CONSUMER_SECRET
     ).toString("base64");
@@ -216,6 +224,10 @@ exports.handler = async (event) => {
       }
     );
 
+    if (!tokenData.access_token) {
+      throw new Error("Daraja did not return an access token.");
+    }
+
     const timestamp = new Date()
       .toISOString()
       .replace(/[-:TZ.]/g, "")
@@ -225,7 +237,9 @@ exports.handler = async (event) => {
       MPESA_SHORTCODE + MPESA_PASSKEY + timestamp
     ).toString("base64");
 
-    // Send the STK Push to the customer's phone.
+    // Send STK Push
+    stage = "sending STK Push";
+
     const payment = await requestJson(
       "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
       {
@@ -255,18 +269,25 @@ exports.handler = async (event) => {
       String(payment.ResponseCode) !== "0"
     ) {
       throw new Error(
-        payment.ResponseDescription || "M-PESA did not accept the request."
+        payment.ResponseDescription ||
+        "M-PESA did not accept the request."
       );
     }
 
-    // Attach Daraja request IDs to the saved order.
+    if (!payment.CheckoutRequestID) {
+      throw new Error("Daraja did not return a checkout request ID.");
+    }
+
+    // Save payment request IDs
+    stage = "saving payment request IDs";
+
     await updateOrder(
       supabaseUrl,
       secretKey,
       orderId,
       {
         checkout_request_id: payment.CheckoutRequestID,
-        merchant_request_id: payment.MerchantRequestID
+        merchant_request_id: payment.MerchantRequestID || null
       }
     );
 
@@ -280,13 +301,17 @@ exports.handler = async (event) => {
           "Payment request accepted for processing.",
         checkoutRequestID: payment.CheckoutRequestID,
         merchantRequestID: payment.MerchantRequestID,
-        amount: amount,
+        amount,
         item: item.name
       })
     };
 
   } catch (error) {
-    console.error("M-PESA STK error:", error.message);
+    console.error(
+      "M-PESA STK error:",
+      stage,
+      error.message
+    );
 
     if (orderId && supabaseUrl && secretKey) {
       try {
@@ -294,12 +319,13 @@ exports.handler = async (event) => {
           supabaseUrl,
           secretKey,
           orderId,
-          {
-            payment_status: "failed"
-          }
+          { payment_status: "failed" }
         );
       } catch (updateError) {
-        console.error("Could not update failed order:", updateError.message);
+        console.error(
+          "Could not update failed order:",
+          updateError.message
+        );
       }
     }
 
@@ -309,7 +335,8 @@ exports.handler = async (event) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        error: error.message || "Unable to process payment."
+        error: error.message || "Unable to process payment.",
+        stage
       })
     };
   }
