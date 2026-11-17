@@ -9,7 +9,7 @@ function requestJson(url, options = {}) {
       res.on("data", chunk => body += chunk);
 
       res.on("end", () => {
-        let result = null;
+        let result = {};
 
         try {
           result = body ? JSON.parse(body) : {};
@@ -31,21 +31,19 @@ function requestJson(url, options = {}) {
     });
 
     req.on("error", reject);
-
     if (options.body) req.write(options.body);
-
     req.end();
   });
 }
 
-async function updateOrder(supabaseUrl, secretKey, orderId, values) {
+async function updateOrder(url, key, id, values) {
   return requestJson(
-    `${supabaseUrl}/rest/v1/orders?id=eq.${encodeURIComponent(orderId)}`,
+    `${url}/rest/v1/orders?id=eq.${encodeURIComponent(id)}`,
     {
       method: "PATCH",
       headers: {
-        apikey: secretKey,
-        Authorization: "Bearer " + secretKey,
+        apikey: key,
+        Authorization: "Bearer " + key,
         "Content-Type": "application/json",
         Prefer: "return=minimal"
       },
@@ -58,7 +56,6 @@ exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Method not allowed" })
     };
   }
@@ -93,20 +90,13 @@ exports.handler = async (event) => {
       throw new Error("Supabase environment variables are missing.");
     }
 
-    supabaseUrl = SUPABASE_URL.replace(/\/+$/, "");
+    supabaseUrl = SUPABASE_URL.trim().replace(/\/+$/, "");
     secretKey = SUPABASE_SECRET_KEY;
-
-    if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(supabaseUrl)) {
-      throw new Error("Supabase URL format is invalid.");
-    }
 
     const data = JSON.parse(event.body || "{}");
 
     const name = String(data.name || "").trim().slice(0, 100);
-
-    if (!name) {
-      throw new Error("Please enter your name.");
-    }
+    if (!name) throw new Error("Please enter your name.");
 
     let phone = String(data.phone || "").replace(/\s+/g, "");
 
@@ -119,29 +109,14 @@ exports.handler = async (event) => {
     }
 
     const products = {
-      water_500ml: {
-        price: 500,
-        name: "500ml Living Water"
-      },
-      water_1l: {
-        price: 1000,
-        name: "1L Living Water"
-      },
-      prayer_request: {
-        price: 700,
-        name: "Prayer Request"
-      },
-      support_choir: {
-        price: 200,
-        name: "Choir Support"
-      }
+      water_500ml: { price: 500, name: "500ml Living Water" },
+      water_1l: { price: 1000, name: "1L Living Water" },
+      prayer_request: { price: 700, name: "Prayer Request" },
+      support_choir: { price: 200, name: "Choir Support" }
     };
 
     const item = products[data.product];
-
-    if (!item) {
-      throw new Error("Invalid payment option.");
-    }
+    if (!item) throw new Error("Invalid payment option.");
 
     const quantity = Number(data.quantity || 1);
 
@@ -149,23 +124,17 @@ exports.handler = async (event) => {
       !Number.isInteger(quantity) ||
       quantity < 1 ||
       quantity > 20 ||
-      (
-        data.product !== "water_500ml" &&
-        data.product !== "water_1l" &&
-        quantity !== 1
-      )
+      (!["water_500ml", "water_1l"].includes(data.product) && quantity !== 1)
     ) {
       throw new Error("Invalid quantity.");
     }
 
     const amount = item.price * quantity;
-
     const location = String(data.location || "").trim().slice(0, 300);
     const prayer = String(data.prayer || "").trim().slice(0, 2000);
 
     if (
-      (data.product === "water_500ml" ||
-       data.product === "water_1l") &&
+      ["water_500ml", "water_1l"].includes(data.product) &&
       !location
     ) {
       throw new Error("Please enter your delivery or collection location.");
@@ -207,7 +176,7 @@ exports.handler = async (event) => {
 
     orderId = savedOrders[0].id;
 
-    // Get Daraja access token
+    // Daraja access token
     stage = "requesting Daraja access token";
 
     const auth = Buffer.from(
@@ -218,9 +187,7 @@ exports.handler = async (event) => {
       "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
       {
         method: "GET",
-        headers: {
-          Authorization: "Basic " + auth
-        }
+        headers: { Authorization: "Basic " + auth }
       }
     );
 
@@ -237,7 +204,7 @@ exports.handler = async (event) => {
       MPESA_SHORTCODE + MPESA_PASSKEY + timestamp
     ).toString("base64");
 
-    // Send STK Push
+    // STK Push
     stage = "sending STK Push";
 
     const payment = await requestJson(
@@ -264,13 +231,9 @@ exports.handler = async (event) => {
       }
     );
 
-    if (
-      payment.ResponseCode &&
-      String(payment.ResponseCode) !== "0"
-    ) {
+    if (payment.ResponseCode && String(payment.ResponseCode) !== "0") {
       throw new Error(
-        payment.ResponseDescription ||
-        "M-PESA did not accept the request."
+        payment.ResponseDescription || "M-PESA did not accept the request."
       );
     }
 
@@ -281,21 +244,14 @@ exports.handler = async (event) => {
     // Save payment request IDs
     stage = "saving payment request IDs";
 
-    await updateOrder(
-      supabaseUrl,
-      secretKey,
-      orderId,
-      {
-        checkout_request_id: payment.CheckoutRequestID,
-        merchant_request_id: payment.MerchantRequestID || null
-      }
-    );
+    await updateOrder(supabaseUrl, secretKey, orderId, {
+      checkout_request_id: payment.CheckoutRequestID,
+      merchant_request_id: payment.MerchantRequestID || null
+    });
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: payment.CustomerMessage ||
           "Payment request accepted for processing.",
@@ -307,33 +263,21 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    console.error(
-      "M-PESA STK error:",
-      stage,
-      error.message
-    );
+    console.error("M-PESA STK error:", stage, error.message);
 
     if (orderId && supabaseUrl && secretKey) {
       try {
-        await updateOrder(
-          supabaseUrl,
-          secretKey,
-          orderId,
-          { payment_status: "failed" }
-        );
+        await updateOrder(supabaseUrl, secretKey, orderId, {
+          payment_status: "failed"
+        });
       } catch (updateError) {
-        console.error(
-          "Could not update failed order:",
-          updateError.message
-        );
+        console.error("Order update error:", updateError.message);
       }
     }
 
     return {
       statusCode: 500,
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         error: error.message || "Unable to process payment.",
         stage
