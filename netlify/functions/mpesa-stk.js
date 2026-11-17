@@ -9,17 +9,22 @@ function requestJson(url, options = {}) {
       res.on("data", chunk => body += chunk);
 
       res.on("end", () => {
-        let result;
+        let result = null;
 
-        try {
-          result = JSON.parse(body);
-        } catch {
-          return reject(new Error("Invalid Daraja response"));
+        if (body) {
+          try {
+            result = JSON.parse(body);
+          } catch {
+            return reject(new Error("Invalid server response."));
+          }
         }
 
         if (res.statusCode < 200 || res.statusCode >= 300) {
           return reject(new Error(
-            result.errorMessage || "Daraja request failed"
+            result?.message ||
+            result?.errorMessage ||
+            result?.error ||
+            "Request failed."
           ));
         }
 
@@ -35,6 +40,22 @@ function requestJson(url, options = {}) {
   });
 }
 
+async function updateOrder(supabaseUrl, secretKey, orderId, values) {
+  return requestJson(
+    `${supabaseUrl}/rest/v1/orders?id=eq.${orderId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "apikey": secretKey,
+        "Authorization": "Bearer " + secretKey,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(values)
+    }
+  );
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return {
@@ -43,13 +64,19 @@ exports.handler = async (event) => {
     };
   }
 
+  let orderId = null;
+  let supabaseUrl = "";
+  let secretKey = "";
+
   try {
     const {
       MPESA_CONSUMER_KEY,
       MPESA_CONSUMER_SECRET,
       MPESA_SHORTCODE,
       MPESA_PASSKEY,
-      MPESA_CALLBACK_URL
+      MPESA_CALLBACK_URL,
+      SUPABASE_URL,
+      SUPABASE_SECRET_KEY
     } = process.env;
 
     if (
@@ -62,7 +89,20 @@ exports.handler = async (event) => {
       throw new Error("M-PESA environment variables are missing.");
     }
 
+    if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
+      throw new Error("Supabase environment variables are missing.");
+    }
+
+    supabaseUrl = SUPABASE_URL.replace(/\/+$/, "");
+    secretKey = SUPABASE_SECRET_KEY;
+
     const data = JSON.parse(event.body || "{}");
+
+    const name = String(data.name || "").trim().slice(0, 100);
+
+    if (!name) {
+      throw new Error("Please enter your name.");
+    }
 
     let phone = String(data.phone || "").replace(/\s+/g, "");
 
@@ -105,15 +145,63 @@ exports.handler = async (event) => {
       !Number.isInteger(quantity) ||
       quantity < 1 ||
       quantity > 20 ||
-      (data.product !== "water_500ml" &&
-       data.product !== "water_1l" &&
-       quantity !== 1)
+      (
+        data.product !== "water_500ml" &&
+        data.product !== "water_1l" &&
+        quantity !== 1
+      )
     ) {
       throw new Error("Invalid quantity.");
     }
 
     const amount = item.price * quantity;
 
+    const location = String(data.location || "").trim().slice(0, 300);
+    const prayer = String(data.prayer || "").trim().slice(0, 2000);
+
+    if (
+      (data.product === "water_500ml" ||
+       data.product === "water_1l") &&
+      !location
+    ) {
+      throw new Error("Please enter your delivery or collection location.");
+    }
+
+    if (data.product === "prayer_request" && !prayer) {
+      throw new Error("Please enter your prayer request.");
+    }
+
+    // Save the order before requesting payment.
+    const savedOrders = await requestJson(
+      `${supabaseUrl}/rest/v1/orders`,
+      {
+        method: "POST",
+        headers: {
+          "apikey": secretKey,
+          "Authorization": "Bearer " + secretKey,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({
+          customer_name: name,
+          customer_phone: phone,
+          product: data.product,
+          quantity: quantity,
+          amount: amount,
+          delivery_location: location || null,
+          prayer_request: prayer || null,
+          payment_status: "pending"
+        })
+      }
+    );
+
+    if (!Array.isArray(savedOrders) || !savedOrders[0]?.id) {
+      throw new Error("The order could not be saved.");
+    }
+
+    orderId = savedOrders[0].id;
+
+    // Get the Daraja access token.
     const auth = Buffer.from(
       MPESA_CONSUMER_KEY + ":" + MPESA_CONSUMER_SECRET
     ).toString("base64");
@@ -137,6 +225,7 @@ exports.handler = async (event) => {
       MPESA_SHORTCODE + MPESA_PASSKEY + timestamp
     ).toString("base64");
 
+    // Send the STK Push to the customer's phone.
     const payment = await requestJson(
       "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
       {
@@ -161,6 +250,26 @@ exports.handler = async (event) => {
       }
     );
 
+    if (
+      payment.ResponseCode &&
+      String(payment.ResponseCode) !== "0"
+    ) {
+      throw new Error(
+        payment.ResponseDescription || "M-PESA did not accept the request."
+      );
+    }
+
+    // Attach Daraja request IDs to the saved order.
+    await updateOrder(
+      supabaseUrl,
+      secretKey,
+      orderId,
+      {
+        checkout_request_id: payment.CheckoutRequestID,
+        merchant_request_id: payment.MerchantRequestID
+      }
+    );
+
     return {
       statusCode: 200,
       headers: {
@@ -177,13 +286,30 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
+    console.error("M-PESA STK error:", error.message);
+
+    if (orderId && supabaseUrl && secretKey) {
+      try {
+        await updateOrder(
+          supabaseUrl,
+          secretKey,
+          orderId,
+          {
+            payment_status: "failed"
+          }
+        );
+      } catch (updateError) {
+        console.error("Could not update failed order:", updateError.message);
+      }
+    }
+
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        error: error.message
+        error: error.message || "Unable to process payment."
       })
     };
   }
