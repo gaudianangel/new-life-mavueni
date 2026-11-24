@@ -59,8 +59,7 @@ async function updateOrder(url, key, id, values) {
 function getKenyaTimestamp() {
   const kenyaTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
 
-  return kenyaTime
-    .toISOString()
+  return kenyaTime.toISOString()
     .replace(/[-:TZ.]/g, "")
     .slice(0, 14);
 }
@@ -124,9 +123,7 @@ exports.handler = async (event) => {
 
     const name = String(data.name || "").trim().slice(0, 100);
 
-    if (!name) {
-      throw new Error("Please enter your name.");
-    }
+    if (!name) throw new Error("Please enter your name.");
 
     let phone = String(data.phone || "").replace(/\s+/g, "");
 
@@ -145,19 +142,43 @@ exports.handler = async (event) => {
     const products = {
       water_500ml: {
         price: 500,
-        name: "500ml Living Water"
+        name: "500ml Living Water",
+        variable: false,
+        quantityAllowed: true
       },
       water_1l: {
         price: 1000,
-        name: "1L Living Water"
+        name: "1L Living Water",
+        variable: false,
+        quantityAllowed: true
       },
       prayer_request: {
         price: 700,
-        name: "Prayer Request"
+        name: "Prayer Request",
+        variable: false,
+        quantityAllowed: false
       },
       support_choir: {
         price: 200,
-        name: "Choir Support"
+        name: "Choir Support",
+        variable: false,
+        quantityAllowed: false
+      },
+      sadaka: {
+        price: 100,
+        name: "Sadaka",
+        variable: false,
+        quantityAllowed: false
+      },
+      tithe: {
+        name: "Tithe",
+        variable: true,
+        quantityAllowed: false
+      },
+      offering: {
+        name: "Offering",
+        variable: true,
+        quantityAllowed: false
       }
     };
 
@@ -173,13 +194,28 @@ exports.handler = async (event) => {
       !Number.isInteger(quantity) ||
       quantity < 1 ||
       quantity > 20 ||
-      (!["water_500ml", "water_1l"].includes(data.product) &&
-        quantity !== 1)
+      (!item.quantityAllowed && quantity !== 1)
     ) {
       throw new Error("Invalid quantity.");
     }
 
-    const amount = item.price * quantity;
+    let amount;
+
+    if (item.variable) {
+      amount = Number(data.amount);
+
+      if (
+        !Number.isSafeInteger(amount) ||
+        amount < 1 ||
+        amount > 250000
+      ) {
+        throw new Error(
+          "Enter a valid contribution between KSh 1 and KSh 250,000."
+        );
+      }
+    } else {
+      amount = item.price * quantity;
+    }
 
     const location = String(data.location || "")
       .trim()
@@ -189,16 +225,16 @@ exports.handler = async (event) => {
       .trim()
       .slice(0, 2000);
 
-    if (
-      ["water_500ml", "water_1l"].includes(data.product) &&
-      !location
-    ) {
+    if (item.quantityAllowed && !location) {
       throw new Error(
         "Please enter your delivery or collection location."
       );
     }
 
-    if (data.product === "prayer_request" && !prayer) {
+    if (
+      data.product === "prayer_request" &&
+      !prayer
+    ) {
       throw new Error("Please enter your prayer request.");
     }
 
@@ -263,7 +299,6 @@ exports.handler = async (event) => {
 
     const shortcode = MPESA_SHORTCODE.trim();
     const tillNumber = MPESA_TILL_NUMBER.trim();
-
     const timestamp = getKenyaTimestamp();
 
     const password = Buffer.from(
@@ -357,9 +392,7 @@ exports.handler = async (event) => {
           supabaseUrl,
           secretKey,
           orderId,
-          {
-            payment_status: "failed"
-          }
+          { payment_status: "failed" }
         );
       } catch (updateError) {
         console.error(
@@ -375,8 +408,7 @@ exports.handler = async (event) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        error: error.message ||
-          "Unable to process payment.",
+        error: error.message || "Unable to process payment.",
         stage
       })
     };
